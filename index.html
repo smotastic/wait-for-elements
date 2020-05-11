@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+<script src="wait-for-key.js"></script>
+
+<script>
+    (function () {
+        waitForKey(["#hallo", "#laterdiv"], () => console.log("alles gefunden"));
+    })();
+
+    (function () {
+        setTimeout(() => {
+            let anyDiv = document.createElement("div");
+            anyDiv.setAttribute("id", "laterdiv");
+            let currentDiv = document.querySelector("#hallo");
+            document.body.insertBefore(anyDiv, currentDiv);
+        }, 1000)
+    })();
+
+</script>
+
+<body>
+    <div id="hallo" style="padding:50px">
+        Hallo
+    </div>
+
+</body>
+
+</html>

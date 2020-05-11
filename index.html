@@ -5,7 +5,8 @@
 
 <script>
     (function () {
-        waitForKey(["#hallo", "#laterdiv"], () => console.log("alles gefunden"));
+        waitForKey(["#hallo", "#laterdiv"], console.log);
+        waitForKey(["#hallo", "#laterdiv"], (node) => console.log(`ich warte nur auf den ersten ${node}`), true);
     })();
 
     (function () {

@@ -10,7 +10,7 @@ const waitForKey = (elements, callback, waitOnce = false) => {
         let nonFoundElements = elements.filter(ele => !found[ele]);
         for (element of nonFoundElements) {
             let foundNode = document.querySelector(element);
-            if (document.querySelector(element)) {
+            if (foundNode) {
                 found[element] = true;
                 callback(foundNode);
                 if (waitOnce) {

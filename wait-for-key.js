@@ -1,26 +1,29 @@
+const waitForKeyElements = (elements, callback, waitOnce = false) => {
 
-const waitForKey = (elements, callback, waitOnce = false) => {
+    let alreadyFound = {};
 
-    if (!Array.isArray(elements)) {
-        elements = [elements];
-    }
-
-    let found = {};
     let interval = setInterval(() => {
-        let nonFoundElements = elements.filter(ele => !found[ele]);
-        for (element of nonFoundElements) {
-            let foundNode = document.querySelector(element);
-            if (foundNode) {
-                found[element] = true;
-                callback(foundNode);
-                if (waitOnce) {
-                    break;
+        let foundNodes = document.querySelectorAll(elements);
+        let foundNodesArray = Array.prototype.slice.call(foundNodes);
+        let nonAlreadyFoundNodes = foundNodesArray.filter(node => !alreadyFound[node]);
+        let elementsFinished = true;
+
+        if (nonAlreadyFoundNodes.length > 0) {
+
+            for (foundNode of nonAlreadyFoundNodes) {
+                alreadyFound[foundNode] = true;
+                let cancelFound = callback([foundNode]);
+                if (cancelFound) {
+                    elementsFinished = false;
                 }
             }
         }
-        let foundElements = Object.keys(found);
-        // ich brauch nur eins ODER erst raus wenn alle da sind
-        if ((waitOnce && foundElements.length >= 1) || (foundElements.length === elements.length)) {
+        else {
+            elementsFinished = false;
+        }
+
+
+        if (elementsFinished && waitOnce) {
             clearInterval(interval);
         }
     }, 300);

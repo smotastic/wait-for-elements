@@ -5,8 +5,31 @@
 
 <script>
     (function () {
-        waitForKey(["#hallo", "#laterdiv"], console.log);
-        waitForKey(["#hallo", "#laterdiv"], (node) => console.log(`ich warte nur auf den ersten ${node}`), true);
+        // waitForKeyElements(["h1", "#hallo", "#laterdiv"], console.log);
+        // Test wartet solange bis #laterdiv kommt
+        waitForKeyElements("#laterdiv", node => {
+            console.log("Testfall1: Solange warten bis Node #laterdiv da ist:")
+            console.log(node);
+            console.log("Testfall1: Interval laeuft weiter");
+        });
+        // Test wartet auf #laterdiv, obwohl er davor h1 findet, da callback return sagt er soll weitermachen
+        waitForKeyElements("h1, #laterdiv", (node) => {
+            if (node[0].tagName !== "H1") {
+                console.log("Testfall2: WaitOnce mit CancelFound (sollte #laterdiv):")
+                console.log(node);
+                console.log("Testfall2: Interval bricht ab, da alles gefunden wurde");
+                return false;
+            } else {
+                console.log("Testfall2: Falscher node, ich warte auf #laterdiv");
+                return true;
+            }
+        }, true);
+        // Test wartet nicht auf #laterdiv, da nur das erste Element (waitOnce) gewollt ist, und der callback nicht explizit sagt er soll weitermachen
+        waitForKeyElements("#hallo, #laterdiv", (node) => {
+            console.log("Testfall3: Ich warte nur auf den ersten den ich finde, also #hallo:");
+            console.log(node);
+            console.log("Testfall3: Interval bricht ab, da gefunden");
+        }, true);
     })();
 
     (function () {
@@ -15,12 +38,17 @@
             anyDiv.setAttribute("id", "laterdiv");
             let currentDiv = document.querySelector("#hallo");
             document.body.insertBefore(anyDiv, currentDiv);
-        }, 1000)
+        }, 2000)
     })();
 
 </script>
 
 <body>
+    <h1 id="nein1">Hallo</h1>
+    <h1 id="nein2">Hallo1</h1>
+    <h1 id="nein3">Hallo2</h1>
+    <h1 id="nein4">Hallo3</h1>
+    <h2 id="ja">Hallo3</h2>
     <div id="hallo" style="padding:50px">
         Hallo
     </div>
